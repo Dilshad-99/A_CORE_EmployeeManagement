@@ -1,0 +1,201 @@
+{
+	"info": {
+		"name": "Employee Management API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"description": "API collection for Employee Management System - Auth & CRUD operations"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3001"
+		},
+		{
+			"key": "token",
+			"value": ""
+		}
+	],
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Annu Patel\",\n  \"email\": \"annu@example.com\",\n  \"password\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/employee/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["employee", "register"]
+						}
+					}
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set('token', jsonData.token);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"annu@example.com\",\n  \"password\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/employee/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["employee", "login"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Employee",
+			"item": [
+				{
+					"name": "Add Employee",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Rahul Sharma\",\n  \"email\": \"rahul@example.com\",\n  \"mobile\": \"9876543210\",\n  \"department\": \"Engineering\",\n  \"designation\": \"Software Developer\",\n  \"salary\": 50000,\n  \"joiningDate\": \"2024-01-15\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/employee/save",
+							"host": ["{{baseUrl}}"],
+							"path": ["employee", "save"]
+						}
+					}
+				},
+				{
+					"name": "Get All Employees",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/employee/fetch?page=1&limit=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["employee", "fetch"],
+							"query": [
+								{ "key": "page", "value": "1" },
+								{ "key": "limit", "value": "10" },
+								{ "key": "search", "value": "", "disabled": true },
+								{ "key": "department", "value": "", "disabled": true },
+								{ "key": "status", "value": "", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Employee By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/employee/fetch/EMPLOYEE_ID_HERE",
+							"host": ["{{baseUrl}}"],
+							"path": ["employee", "fetch", "EMPLOYEE_ID_HERE"]
+						}
+					}
+				},
+				{
+					"name": "Update Employee",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"_id\": \"EMPLOYEE_ID_HERE\",\n  \"salary\": 55000,\n  \"designation\": \"Senior Software Developer\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/employee/update",
+							"host": ["{{baseUrl}}"],
+							"path": ["employee", "update"]
+						}
+					}
+				},
+				{
+					"name": "Delete Employee",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"_id\": \"EMPLOYEE_ID_HERE\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/employee/delete",
+							"host": ["{{baseUrl}}"],
+							"path": ["employee", "delete"]
+						}
+					}
+				}
+			]
+		}
+	]
+}
