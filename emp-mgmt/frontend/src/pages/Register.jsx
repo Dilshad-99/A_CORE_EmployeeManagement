@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { __employeeapiurl } from "../API/API_URL";
 
@@ -32,6 +32,14 @@ function Register() {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    axios.get(__employeeapiurl + "check-admin").then(res => {
+      if (res.data.adminExists) {
+        navigate('/login');
+      }
+    }).catch(() => {});
+  }, [navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -56,7 +64,7 @@ function Register() {
       const res = await axios.post(__employeeapiurl + "register", { name, email, password });
 
       if (res.data.status) {
-        alert("Registration successful!");
+        alert("Admin registered successfully!");
         setName(""); setEmail(""); setPassword(""); setConfirmPassword("");
         navigate('/login');
       } else {
@@ -72,8 +80,8 @@ function Register() {
   return (
     <div style={s.page}>
       <div style={s.card}>
-        <h1 style={s.title}>Register</h1>
-        <p style={s.subtitle}>Create a new account</p>
+        <h1 style={s.title}>Admin Setup</h1>
+        <p style={s.subtitle}>Create the admin account (one-time setup)</p>
 
         {error && <div style={s.error}>{error}</div>}
 
@@ -109,12 +117,12 @@ function Register() {
           </div>
 
           <button type="submit" style={{ ...s.btn, opacity: loading ? 0.6 : 1 }} disabled={loading}>
-            {loading ? 'Creating Account...' : 'Create Account'}
+            {loading ? 'Setting up...' : 'Setup Admin'}
           </button>
         </form>
 
         <p style={s.footer}>
-          Already have an account? <span style={s.link} onClick={() => navigate('/login')}>Login</span>
+          Already have an admin account? <span style={s.link} onClick={() => navigate('/login')}>Login</span>
         </p>
       </div>
     </div>

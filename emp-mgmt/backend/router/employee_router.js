@@ -5,11 +5,11 @@ import { verifyToken } from '../controller/employee_controller.js';
 
 const Router = express.Router();
 
-// auth routes
+
+Router.get('/check-admin', Controller.checkAdmin);
 Router.post('/register', Controller.register);
 Router.post('/login', Controller.login);
 
-// employee routes
 Router.post('/save', verifyToken, Controller.save);
 Router.get('/fetch', verifyToken, Controller.fetch);
 Router.get('/fetch/:_id', verifyToken, Controller.fetchOne);

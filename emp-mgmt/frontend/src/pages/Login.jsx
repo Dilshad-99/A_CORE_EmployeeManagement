@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { __employeeapiurl } from "../API/API_URL";
 
@@ -26,8 +26,15 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [adminExists, setAdminExists] = useState(true);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    axios.get(__employeeapiurl + "check-admin").then(res => {
+      setAdminExists(res.data.adminExists);
+    }).catch(() => {});
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -62,8 +69,8 @@ function Login() {
   return (
     <div style={s.page}>
       <div style={s.card}>
-        <h1 style={s.title}>Login</h1>
-        <p style={s.subtitle}>Sign in to your account</p>
+        <h1 style={s.title}>Admin Login</h1>
+        <p style={s.subtitle}>Sign in to manage employees</p>
 
         {error && <div style={s.error}>{error}</div>}
 
@@ -88,9 +95,11 @@ function Login() {
           </button>
         </form>
 
-        <p style={s.footer}>
-          Don't have an account? <span style={s.link} onClick={() => navigate('/register')}>Register</span>
-        </p>
+        {!adminExists && (
+          <p style={s.footer}>
+            No admin account? <span style={s.link} onClick={() => navigate('/register')}>Setup Admin</span>
+          </p>
+        )}
       </div>
     </div>
   );

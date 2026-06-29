@@ -8,21 +8,27 @@ import bcrypt from 'bcrypt';
 
 const JWT_SECRET = process.env.JWT_SECRET || "secretkey";
 
-
-// ===================== AUTH =====================
+export const checkAdmin = async (req, res) => {
+  try {
+    const admin = await UserSchemaModel.findOne({ role: "admin" });
+    res.status(200).json({ status: true, adminExists: !!admin });
+  } catch (error) {
+    res.status(500).json({ status: false, message: error.message });
+  }
+};
 
 export const register = async (req, res) => {
   try {
+    const existingAdmin = await UserSchemaModel.findOne({ role: "admin" });
+
+    if (existingAdmin) {
+      return res.status(403).json({ status: false, message: "admin already exists" });
+    }
+
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ status: false, message: "all fields are required" });
-    }
-
-    const existingUser = await UserSchemaModel.findOne({ email });
-
-    if (existingUser) {
-      return res.status(400).json({ status: false, message: "email already exists" });
     }
 
     const hashedpassword = await bcrypt.hash(password, 10);
@@ -32,11 +38,11 @@ export const register = async (req, res) => {
       email,
       password: hashedpassword,
       status: 1,
-      role: "user",
+      role: "admin",
       info: Date.now().toString(),
     });
 
-    res.status(201).json({ status: true, message: "register successful" });
+    res.status(201).json({ status: true, message: "admin registered successfully" });
 
   } catch (error) {
     res.status(500).json({ status: false, message: error.message });
@@ -103,8 +109,6 @@ export const verifyToken = async (req, res, next) => {
   }
 };
 
-
-// ===================== EMPLOYEE CRUD =====================
 
 export const save = async (req, res) => {
   try {
