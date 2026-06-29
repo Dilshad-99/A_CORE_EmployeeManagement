@@ -19,7 +19,20 @@
 			"name": "Auth",
 			"item": [
 				{
-					"name": "Register",
+					"name": "Check Admin Exists",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/employee/check-admin",
+							"host": ["{{baseUrl}}"],
+							"path": ["employee", "check-admin"]
+						},
+						"description": "Check if admin account already exists. Returns { adminExists: true/false }"
+					}
+				},
+				{
+					"name": "Register Admin (One-Time)",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -36,7 +49,8 @@
 							"raw": "{{baseUrl}}/employee/register",
 							"host": ["{{baseUrl}}"],
 							"path": ["employee", "register"]
-						}
+						},
+						"description": "One-time admin setup. Returns 403 if admin already exists."
 					}
 				},
 				{
